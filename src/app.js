@@ -15,7 +15,10 @@ const propertyRoutes = require('./routes/property.routes');
 const pCategoryRoutes = require('./routes/p.category.routes');
 const bookingRoutes = require('./routes/booking.routes');
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://sycelim-test-backend.onrender.com',
+  credentials: true
+}));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
