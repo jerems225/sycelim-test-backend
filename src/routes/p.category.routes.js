@@ -4,7 +4,7 @@ const { findCategories, findCategoryById, createCategory, updateCategory, delete
 const router = express.Router();
 
 router.get('/categories', requireAuth, findCategories);
-router.get('/categories/:categoryId', requireAuth, findCategoryById);
+router.get('/categories/:categoryId', findCategoryById);
 router.post('/categories/add', requireAuth, createCategory);
 router.put('/categories/modify/:categoryId', requireAuth, updateCategory);
 router.delete('/categories/remove/:categoryId', requireAuth, deleteCategory)
