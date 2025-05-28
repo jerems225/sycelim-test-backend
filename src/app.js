@@ -22,7 +22,7 @@ app.use(cors({
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/public/cover', express.static(path.join(__dirname, 'cover')));
+app.use(express.static(path.join(process.cwd(), 'public')));
 
 app.get("/", (req, res) => {
   res.send("API is working 🚀");
