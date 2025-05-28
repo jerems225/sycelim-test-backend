@@ -16,7 +16,7 @@ const pCategoryRoutes = require('./routes/p.category.routes');
 const bookingRoutes = require('./routes/booking.routes');
 
 app.use(cors({
-  origin: 'https://sycelim-test-backend.onrender.com',
+  origin: '*',
   credentials: true
 }));
 app.use(morgan('dev'));
