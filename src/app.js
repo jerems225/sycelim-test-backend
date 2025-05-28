@@ -24,6 +24,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/properties/cover', express.static(path.join(__dirname, 'cover')));
 
+app.get("/", (req, res) => {
+  res.send("API is working 🚀");
+});
+
 app.use('/api/v1/', authRoutes);
 app.use('/api/v1/', userRoutes);
 app.use('/api/v1/', propertyRoutes);
