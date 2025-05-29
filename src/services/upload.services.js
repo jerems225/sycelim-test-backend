@@ -1,28 +1,41 @@
+require('dotenv').config();
+const { SUPABASE_BUCKET, SUPABASE_DIRECTORY } = process.env;
+const supabase = require('./superbaseClient');
 const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+const HttpError = require('../utils/HttpError');
 
-const upload = multer({ dest: 'public/cover/'});
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
-const uploadFile = async (req, res, next) => {
-    try{
-        const file = req.file;
-        if(!file){
-            return res.status(400).json({
-                status: 400,
-                message: "No file Uploaded !",
-                data: null
-            });
+const uploadFile = async (file) => {
+    try {
+        if (!file) {
+            throw new HttpError(404, 'No file provided', null);
         }
-    
-        const fileName = uuidv4() + Date.now() + file.originalname
-        const filePath = path.join(__dirname,'../../public/', 'cover', fileName);
-        fs.renameSync(file.path, filePath);
-    
-        return {file, fileName};
-    }catch(err){
-        next(err);
+
+        const fileExt = file.originalname.split('.').pop();
+        const fileName = `${Date.now()}.${fileExt}`;
+        const filePath = `${SUPABASE_DIRECTORY}/${fileName}`;
+        
+
+        const { error } = await supabase.storage
+            .from(SUPABASE_BUCKET)
+            .upload(filePath, file.buffer, {
+                contentType: file.mimetype,
+                upsert: false,
+            });
+
+        if (error) {
+            throw new HttpError(error.status, error.message, error.data)
+        }
+
+        const { data } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(SUPABASE_DIRECTORY);
+        const fileUrl = `${data.publicUrl}/${fileName}`;
+
+
+        return fileUrl;
+    } catch (err) {
+        throw new HttpError(err.status, err.message, err.data)
     }
 }
 

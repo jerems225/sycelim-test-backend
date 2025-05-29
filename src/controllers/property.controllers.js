@@ -9,11 +9,10 @@ const createProperty = async (req, res, next) => {
         const { title, description, location, price, categoryId, ownerId } = req.body;
 
         //Upload Property Cover
-        const {file, fileName} = await uploadFile(req, res, next);
-        const coverPath = `${file.destination}${fileName}`;
+        const fileUrl  = await uploadFile(req.file);
 
         const propertyData = {
-            title, description, location, price: parseFloat(price), cover: coverPath, categoryId: categoryId, ownerId: ownerId
+            title, description, location, price: parseFloat(price), cover: fileUrl, categoryId: categoryId, ownerId: ownerId
         }
 
         if(!isAllFilled(propertyData)){
